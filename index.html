@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="Davut Eren Ekici">
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <title>CodeTrack - Proje ve Zaman Takibi</title>
+</head>
+
+<body>
+    <div class="app-container">
+        <header>
+
+            <div class="logo">
+
+                <span class="logo-icon">⚡</span>
+                <span class="logo-text">CodeTrack</span>
+
+            </div>
+
+            <div class="badge-status">🟢 Sistem Aktif</div>
+
+
+        </header>
+        <div class="top-grid">
+
+            <div class="glass-card time-card">
+                <h3>⏱️ Canlı Çalışma Sayacı</h3>
+
+                <div class="input-group">
+
+                    <label for="projeSec">Çalışan Proje</label>
+
+                    <select id="projeSec">
+                        <option value="PatronAsistani">PatronAsistani</option>
+                        <option value="AI-NOTE-MASTER">AI Note Master</option>
+                        <option value="AI Quiz">AI Quiz</option>
+                    </select>
+                </div>
+
+                <div class="timer-display" id="timer">00:00:00</div>
+
+                <div class="timer-actions">
+                    <button class="btn btn-success" id="baslatBtn">▶ Başlat</button>
+                    <button class="btn btn-danger" id="durdurBtn" disabled>⏸️ Durdur & Kaydet</button>
+                </div>
+            
+            </div>
+
+            <div class="glass-card add-card">
+                <h3>➕ Yeni Proje Ekle</h3>
+                <!-- proje girişi (Kullanıcı) -->
+                <form action="#" class="yeniProjeFormu">
+                    <div class="input-group">
+                        <label for="projeAdi">Proje Adı</label>
+                        <input type="text" id="projeAdi" placeholder="Örn: Portfolyo Sitem" required>
+
+                    </div>
+
+                    <div class="input-gruop">
+                        <label for="teknolojiler">Teknolojiler (Virgülle ayırın)</label>
+                        <input type="text" id="teknolojiler" placeholder="Örn: HTML, CSS, JS" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Proje Oluştur</button>
+                </form>
+            </div>
+
+        </div>
+
+    </div>
+</body>
+
+</html>
