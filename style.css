@@ -1,0 +1,43 @@
+/* 1. :root -> Tüm projede geçerli renk ve tasarım değişkenlerimizi tanımladığımız alan. */
+:root {
+    --bg-color: #0b0f19; /* Ana arka planın koyu lacivert/siyah rengi */
+    --card-bg: rgba(23, 32, 54, 0.6); /* Cam kartların %60 opaklıktaki şeffaf rengi */
+    --border-color: rgba(255, 255, 255, 0.08); /* Kartların etrafındaki ince şeffaf çizgi */
+    --accent-blue: #3b82f6; /* Vurgulayıcı mavi renk (butonlar vb.) */
+    --accent-cyan: #06b6d4; /* Vurgulayıcı turkuaz renk (yazılar/neon etkileri) */
+    --accent-green: #10b981; /* Başlat butonu ve durum yeşili */
+    --accent-red: #ef4444; /* Durdur/Sil butonları kırmızısı */
+    --text-main: #f8fafc; /* Ana metin rengi (beyaza yakın parlak) */
+    --text-muted: #94a3b8; /* İkincil/silik metin rengi (gri) */
+}
+
+* {
+    box-sizing: border-box; 
+    margin: 0; 
+    padding: 0; 
+    font-family: 'Inter', sans-serif; /
+}
+
+
+body {
+    background-color: var(--bg-color);
+   
+    background-image: 
+        radial-gradient(at 0% 0%, rgba(59, 130, 246, 0.15) 0px, transparent 50%),
+        radial-gradient(at 100% 100%, rgba(6, 182, 212, 0.1) 0px, transparent 50%);
+        
+    color: var(--text-main); 
+    min-height: 100vh; 
+    padding: 30px 20px; 
+    display: flex; 
+    justify-content: center; 
+}
+
+
+.app-container {
+    width: 100%; 
+    max-width: 1000px; 
+    display: flex;
+    flex-direction: column; 
+    gap: 25px; 
+}
