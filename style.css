@@ -1,43 +1,106 @@
 /* 1. :root -> Tüm projede geçerli renk ve tasarım değişkenlerimizi tanımladığımız alan. */
 :root {
-    --bg-color: #0b0f19; /* Ana arka planın koyu lacivert/siyah rengi */
-    --card-bg: rgba(23, 32, 54, 0.6); /* Cam kartların %60 opaklıktaki şeffaf rengi */
-    --border-color: rgba(255, 255, 255, 0.08); /* Kartların etrafındaki ince şeffaf çizgi */
-    --accent-blue: #3b82f6; /* Vurgulayıcı mavi renk (butonlar vb.) */
-    --accent-cyan: #06b6d4; /* Vurgulayıcı turkuaz renk (yazılar/neon etkileri) */
-    --accent-green: #10b981; /* Başlat butonu ve durum yeşili */
-    --accent-red: #ef4444; /* Durdur/Sil butonları kırmızısı */
-    --text-main: #f8fafc; /* Ana metin rengi (beyaza yakın parlak) */
-    --text-muted: #94a3b8; /* İkincil/silik metin rengi (gri) */
+    --bg-color: #0b0f19;
+    /* Ana arka planın koyu lacivert/siyah rengi */
+    --card-bg: rgba(23, 32, 54, 0.6);
+    /* Cam kartların %60 opaklıktaki şeffaf rengi */
+    --border-color: rgba(255, 255, 255, 0.08);
+    /* Kartların etrafındaki ince şeffaf çizgi */
+    --accent-blue: #3b82f6;
+    /* Vurgulayıcı mavi renk (butonlar vb.) */
+    --accent-cyan: #06b6d4;
+    /* Vurgulayıcı turkuaz renk (yazılar/neon etkileri) */
+    --accent-green: #10b981;
+    /* Başlat butonu ve durum yeşili */
+    --accent-red: #ef4444;
+    /* Durdur/Sil butonları kırmızısı */
+    --text-main: #f8fafc;
+    /* Ana metin rengi (beyaza yakın parlak) */
+    --text-muted: #94a3b8;
+    /* İkincil/silik metin rengi (gri) */
 }
 
 * {
-    box-sizing: border-box; 
-    margin: 0; 
-    padding: 0; 
-    font-family: 'Inter', sans-serif; /
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Inter', sans-serif;/
 }
 
 
 body {
     background-color: var(--bg-color);
-   
-    background-image: 
+
+    background-image:
         radial-gradient(at 0% 0%, rgba(59, 130, 246, 0.15) 0px, transparent 50%),
         radial-gradient(at 100% 100%, rgba(6, 182, 212, 0.1) 0px, transparent 50%);
-        
-    color: var(--text-main); 
-    min-height: 100vh; 
-    padding: 30px 20px; 
-    display: flex; 
-    justify-content: center; 
+
+    color: var(--text-main);
+    min-height: 100vh;
+    padding: 30px 20px;
+    display: flex;
+    justify-content: center;
 }
 
 
 .app-container {
-    width: 100%; 
-    max-width: 1000px; 
+    width: 100%;
+    max-width: 1000px;
     display: flex;
-    flex-direction: column; 
-    gap: 25px; 
+    flex-direction: column;
+    gap: 25px;
+}
+
+header {
+    display: flex;
+    justify-content: space-between; /*Logoyu Sola rozeti sağa iter  */
+    align-items: center;
+    padding: 10px 5px;
+}
+
+.logo{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.logo-icon{
+    font-size: 1.8rem; 
+    /* İkona maviden turkuaza kayan modern bir renk gradyanı verir. */
+    background: linear-gradient(135deg, var(--accent-blue), var(--accent-cyan));
+    -webkit-background-clip: text;/* Gradyanı metnin/ikonun içine maskeler. */
+    -webkit-text-fill-color: transparent;/* İkonun kendi rengini şeffaf yapar ki gradyan görünsün. */
+}
+
+.logo-text{
+    font-size: 1.5rem;
+    font-weight: 700;
+    letter-spacing: -0.5px; /* Harf aralığını hafifçe daraltarak modern görünüm sağlar. */
+}
+
+.badge-status {
+    background: rgba(16, 185, 129, 0.1); 
+    color: var(--accent-green); /* Parlak yeşil yazı rengi */
+    border: 1px solid rgba(16, 185, 129, 0.2); 
+    padding: 6px 14px; 
+    border-radius: 20px; 
+    font-size: 0.85rem; 
+    font-weight: 600; 
+}
+
+.glass-card {
+    background: var(--card-bg); /* %60 saydam koyu lacivert arka plan */
+    backdrop-filter: blur(16px); /* Arka planı 16px bulanıklaştırarak gerçek cam efekti verir. */
+    -webkit-backdrop-filter: blur(16px); /* Safari tarayıcı desteği için */
+    border: 1px solid var(--border-color); 
+    border-radius: 16px; 
+    padding: 24px; 
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3); 
+}
+
+.glass-card h3 {
+    font-size: 1.1rem;
+    color: var(--text-muted); /* Gri/silik yazı rengi */
+    margin-bottom: 18px; 
+    font-weight: 600;
 }
