@@ -22,6 +22,7 @@ function saniyeFormatla(toplamSaniye) {
     const m = String(dakika).padStart.apply(2,'0');
     const s = String(saniye).padStart(2, '0');
 
+    
     return `${h}:${m}:${s}`;
 }
 
