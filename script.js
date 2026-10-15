@@ -1,5 +1,8 @@
 let kayitliVeri = localStorage.getItem('codeTrackProjeler');
+let kayitliGunler = localStorage.getItem('codeTrackAktiviteler');
+
 let projeler = [];
+let gunlukAktiviteler = {};
 
 try {
     projeler = kayitliVeri ? JSON.parse(kayitliVeri) : [];
@@ -16,12 +19,26 @@ try {
     ];
 }
 
+try {
+    gunlukAktiviteler = kayitliGunler ? JSON.parse(kayitliGunler) : {
+        [bugunTarihStr()]: 7200
+    };
+} catch (e) {
+    gunlukAktiviteler = {};
+}
+
 let timerInterval = null;
 let gecenSaniye = 0;
 let calisiyorMu = false;
 
+function bugunTarihStr() {
+    const d = new Date();
+    return d.toISOString().split('T')[0];
+}
+
 function verileriKaydet() {
     localStorage.setItem('codeTrackProjeler', JSON.stringify(projeler));
+    localStorage.setItem('codeTrackAktiviteler', JSON.stringify(gunlukAktiviteler));
 }
 
 function saniyeFormatla(toplamSaniye) {
@@ -29,11 +46,49 @@ function saniyeFormatla(toplamSaniye) {
     const dakika = Math.floor((toplamSaniye % 3600) / 60);
     const saniye = toplamSaniye % 60;
 
-    const h = String(saat).padStart(2, '0');
-    const m = String(dakika).padStart(2, '0');
-    const s = String(saniye).padStart(2, '0');
+    return `${String(saat).padStart(2, '0')}:${String(dakika).padStart(2, '0')}:${String(saniye).padStart(2, '0')}`;
+}
 
-    return `${h}:${m}:${s}`;
+function heatmapCiz() {
+    const gridEl = document.getElementById('heatmapGrid');
+    const monthsEl = document.getElementById('heatmapMonths');
+    gridEl.innerHTML = '';
+    monthsEl.innerHTML = '';
+
+    const gunSayisi = 364;
+    const bugun = new Date();
+    let eklenenAylar = new Set();
+
+    for (let i = gunSayisi - 1; i >= 0; i--) {
+        const tarih = new Date();
+        tarih.setDate(bugun.getDate() - i);
+        const tarihStr = tarih.toISOString().split('T')[0];
+
+        const ayAdi = tarih.toLocaleString('en-US', { month: 'short' });
+        if (!eklenenAylar.has(ayAdi) && tarih.getDate() <= 7) {
+            eklenenAylar.add(ayAdi);
+        }
+
+        const calismaSuresi = gunlukAktiviteler[tarihStr] || 0;
+
+        let seviye = 0;
+        if (calismaSuresi > 0 && calismaSuresi <= 1800) seviye = 1;
+        else if (calismaSuresi > 1800 && calismaSuresi <= 5400) seviye = 2;
+        else if (calismaSuresi > 5400 && calismaSuresi <= 10800) seviye = 3;
+        else if (calismaSuresi > 10800) seviye = 4;
+
+        const kare = document.createElement('div');
+        kare.className = `heatmap-square level-${seviye}`;
+        kare.title = `${tarihStr}: ${Math.round(calismaSuresi / 60)} dakika çalışma`;
+        
+        gridEl.appendChild(kare);
+    }
+
+    eklenenAylar.forEach(ay => {
+        const span = document.createElement('span');
+        span.textContent = ay;
+        monthsEl.appendChild(span);
+    });
 }
 
 function arayuzCiz() {
@@ -73,6 +128,8 @@ function arayuzCiz() {
 
         projeListesiEl.appendChild(kart);
     });
+
+    heatmapCiz();
 }
 
 function projeSil(id) {
@@ -115,6 +172,10 @@ durdurBtn.addEventListener('click', () => {
 
     if (hedefProje) {
         hedefProje.sureSaniye += gecenSaniye;
+        
+        const bugun = bugunTarihStr();
+        gunlukAktiviteler[bugun] = (gunlukAktiviteler[bugun] || 0) + gecenSaniye;
+
         verileriKaydet();
         arayuzCiz();
     }

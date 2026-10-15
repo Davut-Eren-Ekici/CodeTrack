@@ -1,47 +1,33 @@
-/* 1. :root -> Tüm projede geçerli renk ve tasarım değişkenlerimizi tanımladığımız alan. */
 :root {
     --bg-color: #0b0f19;
-    /* Ana arka planın koyu lacivert/siyah rengi */
     --card-bg: rgba(23, 32, 54, 0.6);
-    /* Cam kartların %60 opaklıktaki şeffaf rengi */
     --border-color: rgba(255, 255, 255, 0.08);
-    /* Kartların etrafındaki ince şeffaf çizgi */
     --accent-blue: #3b82f6;
-    /* Vurgulayıcı mavi renk (butonlar vb.) */
     --accent-cyan: #06b6d4;
-    /* Vurgulayıcı turkuaz renk (yazılar/neon etkileri) */
     --accent-green: #10b981;
-    /* Başlat butonu ve durum yeşili */
     --accent-red: #ef4444;
-    /* Durdur/Sil butonları kırmızısı */
     --text-main: #f8fafc;
-    /* Ana metin rengi (beyaza yakın parlak) */
     --text-muted: #94a3b8;
-    /* İkincil/silik metin rengi (gri) */
 }
 
 * {
     box-sizing: border-box;
     margin: 0;
     padding: 0;
-    font-family: 'Inter', sans-serif;/
+    font-family: 'Inter', sans-serif;
 }
-
 
 body {
     background-color: var(--bg-color);
-
     background-image:
         radial-gradient(at 0% 0%, rgba(59, 130, 246, 0.15) 0px, transparent 50%),
         radial-gradient(at 100% 100%, rgba(6, 182, 212, 0.1) 0px, transparent 50%);
-
     color: var(--text-main);
     min-height: 100vh;
     padding: 30px 20px;
     display: flex;
     justify-content: center;
 }
-
 
 .app-container {
     width: 100%;
@@ -54,7 +40,6 @@ body {
 header {
     display: flex;
     justify-content: space-between;
-    /*Logoyu Sola rozeti sağa iter  */
     align-items: center;
     padding: 10px 5px;
 }
@@ -67,27 +52,21 @@ header {
 
 .logo-icon {
     font-size: 1.8rem;
-    /* İkona maviden turkuaza kayan modern bir renk gradyanı verir. */
     background: linear-gradient(135deg, var(--accent-blue), var(--accent-cyan));
     background-clip: text;
-    /* Gradyanı metnin/ikonun içine maskeler. */
     -webkit-background-clip: text;
-    /* Gradyanı metnin/ikonun içine maskeler. */
     -webkit-text-fill-color: transparent;
-    /* İkonun kendi rengini şeffaf yapar ki gradyan görünsün. */
 }
 
 .logo-text {
     font-size: 1.5rem;
     font-weight: 700;
     letter-spacing: -0.5px;
-    /* Harf aralığını hafifçe daraltarak modern görünüm sağlar. */
 }
 
 .badge-status {
     background: rgba(16, 185, 129, 0.1);
     color: var(--accent-green);
-    /* Parlak yeşil yazı rengi */
     border: 1px solid rgba(16, 185, 129, 0.2);
     padding: 6px 14px;
     border-radius: 20px;
@@ -97,11 +76,8 @@ header {
 
 .glass-card {
     background: var(--card-bg);
-    /* %60 saydam koyu lacivert arka plan */
     backdrop-filter: blur(16px);
-    /* Arka planı 16px bulanıklaştırarak gerçek cam efekti verir. */
     -webkit-backdrop-filter: blur(16px);
-    /* Safari tarayıcı desteği için */
     border: 1px solid var(--border-color);
     border-radius: 16px;
     padding: 24px;
@@ -111,14 +87,12 @@ header {
 .glass-card h3 {
     font-size: 1.1rem;
     color: var(--text-muted);
-    /* Gri/silik yazı rengi */
     margin-bottom: 18px;
     font-weight: 600;
 }
 
 .top-grid {
     display: grid;
-    /* Izgara (Grid) düzenini aktif eder. */
     grid-template-columns: 1fr 1fr;
     gap: 20px;
 }
@@ -126,7 +100,6 @@ header {
 @media (max-width: 768px) {
     .top-grid {
         grid-template-columns: 1fr;
-        /* Mobil cihazlarda kartları yan yana değil, alt alta dizer. */
     }
 }
 
@@ -142,9 +115,8 @@ header {
     color: var(--text-muted);
 }
 
-input,
-select {
-    background: rgb(11, 15, 25, 0.7);
+input, select {
+    background: rgba(11, 15, 25, 0.7);
     border: 1px solid var(--border-color);
     color: var(--text-muted);
     padding: 12px 14px;
@@ -152,12 +124,13 @@ select {
     outline: none;
     font-size: 0.95rem;
     transition: all 0.2s;
+    width: 100%;
 }
 
-input:focus,
-select:focus {
+input:focus, select:focus {
     border-color: var(--accent-blue);
-    box-shadow: 0 0 10px rgb(59, 130, 246, 0.2);
+    box-shadow: 0 0 10px rgba(59, 130, 246, 0.2);
+    color: var(--text-main);
 }
 
 .timer-display {
@@ -166,7 +139,6 @@ select:focus {
     text-align: center;
     margin: 15px 0;
     font-family: monospace;
-
     background: linear-gradient(135deg, #ffffff, var(--accent-cyan));
     background-clip: text;
     -webkit-background-clip: text;
@@ -189,53 +161,122 @@ select:focus {
     font-size: 0.9rem;
 }
 
-/* Buton Renk Varyasyonları */
-.btn-primary {
-    background: var(--accent-blue);
-    color: white;
-}
+.btn-primary { background: var(--accent-blue); color: white; }
+.btn-primary:hover { background: #2563eb; }
 
-.btn-primary:hover {
-    background: #2563eb;
-}
+.btn-success { background: var(--accent-green); color: white; }
+.btn-success:hover { background: #059669; }
 
-/* Fare üzerine gelince koyulaşır. */
-
-.btn-success {
-    background: var(--accent-green);
-    color: white;
-}
-
-.btn-success:hover {
-    background: #059669;
-}
-
-.btn-danger {
-    background: var(--accent-red);
-    color: white;
-}
-
-.btn-danger:hover {
-    background: #dc2626;
-}
+.btn-danger { background: var(--accent-red); color: white; }
+.btn-danger:hover { background: #dc2626; }
 
 .btn:disabled {
     opacity: 0.4;
-    /* Butonu yarı saydam/silik yapar. */
     cursor: not-allowed;
-    /* Fareyle gelince tıklanamaz işareti çıkarır. */
 }
 
+/* Heatmap Tam Ekran Stilleri */
+.contribution-section {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.heatmap-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    width: 100%;
+    padding-bottom: 5px;
+}
+
+.heatmap-months {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    padding-left: 28px;
+    padding-right: 10px;
+}
+
+.heatmap-body {
+    display: flex;
+    gap: 8px;
+    align-items: flex-start;
+    width: 100%;
+}
+
+.heatmap-weekdays {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 108px;
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    padding-right: 4px;
+}
+
+.heatmap-weekdays span {
+    height: 12px;
+    line-height: 12px;
+}
+
+.heatmap-grid {
+    display: grid;
+    grid-template-rows: repeat(7, 12px);
+    grid-template-columns: repeat(52, 1fr);
+    gap: 4px;
+    width: 100%;
+}
+
+.heatmap-square {
+    width: 100%;
+    height: 12px;
+    border-radius: 2px;
+    transition: transform 0.1s;
+}
+
+.heatmap-square:hover {
+    transform: scale(1.3);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+}
+
+.level-0 { background-color: rgba(255, 255, 255, 0.05); }
+.level-1 { background-color: #0e4429; }
+.level-2 { background-color: #006d32; }
+.level-3 { background-color: #26a641; }
+.level-4 { background-color: #39d353; }
+
+.heatmap-footer {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 8px;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    margin-top: 5px;
+}
+
+.heatmap-legend {
+    display: flex;
+    gap: 4px;
+}
+
+.heatmap-legend .square {
+    width: 10px;
+    height: 10px;
+    border-radius: 2px;
+}
+
+/* Proje Kartları */
 .project-grid {
     display: grid;
-    /* Minimum 280px genişliğinde kartlar oluşturur, sığdıkça yan yana dizer. */
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
     gap: 16px;
 }
 
 .project-card {
     background: rgba(11, 15, 25, 0.5);
-    /* İç kart arka planı */
     border: 1px solid var(--border-color);
     border-radius: 12px;
     padding: 18px;
@@ -248,7 +289,6 @@ select:focus {
 
 .project-card:hover {
     transform: translateY(-3px);
-    /* Kartı 3 piksel yukarı kaldırır. */
     border-color: rgba(59, 130, 246, 0.4);
 }
 
@@ -293,8 +333,6 @@ select:focus {
     transition: transform 0.2s;
 }
 
-
 .btn-delete:hover {
     transform: scale(1.2);
-    /* Üzerine gelince çöp kutusu simgesini büyütür. */
 }
