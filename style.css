@@ -336,3 +336,34 @@ input:focus, select:focus {
 .btn-delete:hover {
     transform: scale(1.2);
 }
+
+[data-bs-theme="dark"] {
+    --bg-color: #0b0f19;
+    --card-bg: rgba(23, 32, 54, 0.6);
+    --border-color: rgba(255, 255, 255, 0.08);
+    --text-main: #f8fafc;
+    --text-muted: #94a3b8;
+}
+
+/* Aydınlık Mod Değişkenleri */
+[data-bs-theme="light"] {
+    --bg-color: #f8fafc;
+    --card-bg: rgba(255, 255, 255, 0.85);
+    --border-color: rgba(0, 0, 0, 0.1);
+    --text-main: #0f172a;
+    --text-muted: #64748b;
+}
+
+body {
+    background-color: var(--bg-color);
+    color: var(--text-main);
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.glass-card {
+    background: var(--card-bg) !important;
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid var(--border-color) !important;
+    color: var(--text-main);
+}

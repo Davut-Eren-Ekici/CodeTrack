@@ -1,3 +1,22 @@
+// --- Dark / Light Mode Yönetimi ---
+const themeToggleBtn = document.getElementById('themeToggleBtn');
+const htmlElement = document.documentElement;
+
+const kaydedilenTema = localStorage.getItem('codeTrackTheme') || 'dark';
+htmlElement.setAttribute('data-bs-theme', kaydedilenTema);
+themeToggleBtn.textContent = kaydedilenTema === 'dark' ? '☀️' : '🌙';
+
+themeToggleBtn.addEventListener('click', () => {
+    const mevcutTema = htmlElement.getAttribute('data-bs-theme');
+    const yeniTema = mevcutTema === 'dark' ? 'light' : 'dark';
+
+    htmlElement.setAttribute('data-bs-theme', yeniTema);
+    
+    themeToggleBtn.textContent = yeniTema === 'dark' ? '☀️' : '🌙';
+    
+    localStorage.setItem('codeTrackTheme', yeniTema);
+});
+
 let kayitliVeri = localStorage.getItem('codeTrackProjeler');
 let kayitliGunler = localStorage.getItem('codeTrackAktiviteler');
 
@@ -31,9 +50,22 @@ let timerInterval = null;
 let gecenSaniye = 0;
 let calisiyorMu = false;
 
+function yerelTarihStr(tarih) {
+    const yil = tarih.getFullYear();
+    const ay = String(tarih.getMonth() + 1).padStart(2, '0');
+    const gun = String(tarih.getDate()).padStart(2, '0');
+    return `${yil}-${ay}-${gun}`; // Veritabanı anahtarı için (YYYY-MM-DD)
+}
+
+function formatGosterimTarihi(tarih) {
+    const yil = tarih.getFullYear();
+    const ay = String(tarih.getMonth() + 1).padStart(2, '0');
+    const gun = String(tarih.getDate()).padStart(2, '0');
+    return `${gun}-${ay}-${yil}`; // İstediğin görünüm için (GG-AA-YYYY -> 16-10-2026)
+}
+
 function bugunTarihStr() {
-    const d = new Date();
-    return d.toISOString().split('T')[0];
+    return yerelTarihStr(new Date());
 }
 
 function verileriKaydet() {
@@ -55,33 +87,59 @@ function heatmapCiz() {
     gridEl.innerHTML = '';
     monthsEl.innerHTML = '';
 
-    const gunSayisi = 364;
     const bugun = new Date();
+    bugun.setHours(0, 0, 0, 0); // Saat farkı kaymalarını önlemek için sıfırlıyoruz
+
+    // Bulunduğumuz haftanın Pazartesi gününü bulalım
+    const gun = bugun.getDay();
+    const farkToPazartesi = gun === 0 ? -6 : 1 - gun;
+    const buHaftaPazartesi = new Date(bugun);
+    buHaftaPazartesi.setDate(bugun.getDate() + farkToPazartesi);
+
+    // Tam 52 hafta (364 gün) öncesinin Pazartesi gününden başlayalım
+    const baslangicTarihi = new Date(buHaftaPazartesi);
+    baslangicTarihi.setDate(buHaftaPazartesi.getDate() - (51 * 7));
+
     let eklenenAylar = new Set();
+    let simdikiTarih = new Date(baslangicTarihi);
 
-    for (let i = gunSayisi - 1; i >= 0; i--) {
-        const tarih = new Date();
-        tarih.setDate(bugun.getDate() - i);
-        const tarihStr = tarih.toISOString().split('T')[0];
+    // Tam 52 hafta (364 kutucuk) boyunca döngüyü çalıştıralım
+    for (let i = 0; i < 364; i++) {
+        const tarihStr = yerelTarihStr(simdikiTarih);          // YYYY-MM-DD
+        const gosterimTarihiStr = formatGosterimTarihi(simdikiTarih); // GG-AA-YYYY (16-10-2026)
+        const ayAdi = simdikiTarih.toLocaleString('en-US', { month: 'short' });
 
-        const ayAdi = tarih.toLocaleString('en-US', { month: 'short' });
-        if (!eklenenAylar.has(ayAdi) && tarih.getDate() <= 7) {
+        if (!eklenenAylar.has(ayAdi) && simdikiTarih.getDate() <= 7) {
             eklenenAylar.add(ayAdi);
         }
 
         const calismaSuresi = gunlukAktiviteler[tarihStr] || 0;
 
         let seviye = 0;
-        if (calismaSuresi > 0 && calismaSuresi <= 1800) seviye = 1;
-        else if (calismaSuresi > 1800 && calismaSuresi <= 5400) seviye = 2;
-        else if (calismaSuresi > 5400 && calismaSuresi <= 10800) seviye = 3;
-        else if (calismaSuresi > 10800) seviye = 4;
+        // Eğer tarih bugünden sonraysa (gelecek günler) soluk gösterelim
+        if (simdikiTarih > bugun) {
+            seviye = 0;
+        } else {
+            if (calismaSuresi > 0 && calismaSuresi <= 1800) seviye = 1;
+            else if (calismaSuresi > 1800 && calismaSuresi <= 5400) seviye = 2;
+            else if (calismaSuresi > 5400 && calismaSuresi <= 10800) seviye = 3;
+            else if (calismaSuresi > 10800) seviye = 4;
+        }
 
         const kare = document.createElement('div');
         kare.className = `heatmap-square level-${seviye}`;
-        kare.title = `${tarihStr}: ${Math.round(calismaSuresi / 60)} dakika çalışma`;
+        
+        if (simdikiTarih > bugun) {
+            kare.style.opacity = '0.15';
+        }
+        
+        // Tooltip üzerinde GG-AA-YYYY formatında görünür (Örn: 16-10-2026)
+        kare.title = `${gosterimTarihiStr}: ${Math.round(calismaSuresi / 60)} dakika çalışma`;
         
         gridEl.appendChild(kare);
+
+        // Bir sonraki güne geç
+        simdikiTarih.setDate(simdikiTarih.getDate() + 1);
     }
 
     eklenenAylar.forEach(ay => {
