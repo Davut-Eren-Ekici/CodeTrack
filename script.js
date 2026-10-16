@@ -11,12 +11,11 @@ themeToggleBtn.addEventListener('click', () => {
     const yeniTema = mevcutTema === 'dark' ? 'light' : 'dark';
 
     htmlElement.setAttribute('data-bs-theme', yeniTema);
-    
     themeToggleBtn.textContent = yeniTema === 'dark' ? '☀️' : '🌙';
-    
     localStorage.setItem('codeTrackTheme', yeniTema);
 });
 
+// --- Veri Yönetimi (Boş Başlangıç) ---
 let kayitliVeri = localStorage.getItem('codeTrackProjeler');
 let kayitliGunler = localStorage.getItem('codeTrackAktiviteler');
 
@@ -25,23 +24,12 @@ let gunlukAktiviteler = {};
 
 try {
     projeler = kayitliVeri ? JSON.parse(kayitliVeri) : [];
-    if (!Array.isArray(projeler) || projeler.length === 0) {
-        projeler = [
-            { id: 1, ad: 'PatronAsistani', teknolojiler: ['HTML', 'CSS', 'JS'], sureSaniye: 52200 },
-            { id: 2, ad: 'AI Quiz', teknolojiler: ['HTML', 'CSS', 'JS'], sureSaniye: 18000 }
-        ];
-    }
 } catch (e) {
-    projeler = [
-        { id: 1, ad: 'PatronAsistani', teknolojiler: ['HTML', 'CSS', 'JS'], sureSaniye: 52200 },
-        { id: 2, ad: 'AI Quiz', teknolojiler: ['HTML', 'CSS', 'JS'], sureSaniye: 18000 }
-    ];
+    projeler = [];
 }
 
 try {
-    gunlukAktiviteler = kayitliGunler ? JSON.parse(kayitliGunler) : {
-        [bugunTarihStr()]: 7200
-    };
+    gunlukAktiviteler = kayitliGunler ? JSON.parse(kayitliGunler) : {};
 } catch (e) {
     gunlukAktiviteler = {};
 }
@@ -54,14 +42,14 @@ function yerelTarihStr(tarih) {
     const yil = tarih.getFullYear();
     const ay = String(tarih.getMonth() + 1).padStart(2, '0');
     const gun = String(tarih.getDate()).padStart(2, '0');
-    return `${yil}-${ay}-${gun}`; // Veritabanı anahtarı için (YYYY-MM-DD)
+    return `${yil}-${ay}-${gun}`;
 }
 
 function formatGosterimTarihi(tarih) {
     const yil = tarih.getFullYear();
     const ay = String(tarih.getMonth() + 1).padStart(2, '0');
     const gun = String(tarih.getDate()).padStart(2, '0');
-    return `${gun}-${ay}-${yil}`; // İstediğin görünüm için (GG-AA-YYYY -> 16-10-2026)
+    return `${gun}-${ay}-${yil}`;
 }
 
 function bugunTarihStr() {
@@ -88,25 +76,22 @@ function heatmapCiz() {
     monthsEl.innerHTML = '';
 
     const bugun = new Date();
-    bugun.setHours(0, 0, 0, 0); // Saat farkı kaymalarını önlemek için sıfırlıyoruz
+    bugun.setHours(0, 0, 0, 0);
 
-    // Bulunduğumuz haftanın Pazartesi gününü bulalım
     const gun = bugun.getDay();
     const farkToPazartesi = gun === 0 ? -6 : 1 - gun;
     const buHaftaPazartesi = new Date(bugun);
     buHaftaPazartesi.setDate(bugun.getDate() + farkToPazartesi);
 
-    // Tam 52 hafta (364 gün) öncesinin Pazartesi gününden başlayalım
     const baslangicTarihi = new Date(buHaftaPazartesi);
     baslangicTarihi.setDate(buHaftaPazartesi.getDate() - (51 * 7));
 
     let eklenenAylar = new Set();
     let simdikiTarih = new Date(baslangicTarihi);
 
-    // Tam 52 hafta (364 kutucuk) boyunca döngüyü çalıştıralım
     for (let i = 0; i < 364; i++) {
-        const tarihStr = yerelTarihStr(simdikiTarih);          // YYYY-MM-DD
-        const gosterimTarihiStr = formatGosterimTarihi(simdikiTarih); // GG-AA-YYYY (16-10-2026)
+        const tarihStr = yerelTarihStr(simdikiTarih);
+        const gosterimTarihiStr = formatGosterimTarihi(simdikiTarih);
         const ayAdi = simdikiTarih.toLocaleString('en-US', { month: 'short' });
 
         if (!eklenenAylar.has(ayAdi) && simdikiTarih.getDate() <= 7) {
@@ -116,7 +101,6 @@ function heatmapCiz() {
         const calismaSuresi = gunlukAktiviteler[tarihStr] || 0;
 
         let seviye = 0;
-        // Eğer tarih bugünden sonraysa (gelecek günler) soluk gösterelim
         if (simdikiTarih > bugun) {
             seviye = 0;
         } else {
@@ -133,12 +117,9 @@ function heatmapCiz() {
             kare.style.opacity = '0.15';
         }
         
-        // Tooltip üzerinde GG-AA-YYYY formatında görünür (Örn: 16-10-2026)
         kare.title = `${gosterimTarihiStr}: ${Math.round(calismaSuresi / 60)} dakika çalışma`;
-        
         gridEl.appendChild(kare);
 
-        // Bir sonraki güne geç
         simdikiTarih.setDate(simdikiTarih.getDate() + 1);
     }
 
@@ -157,8 +138,18 @@ function arayuzCiz() {
     projeSecEl.innerHTML = '';
 
     if (projeler.length === 0) {
-        projeListesiEl.innerHTML = '<p style="color: var(--text-muted); grid-column: 1/-1; text-align: center;">Henüz eklenmiş bir proje yok.</p>';
+        projeListesiEl.innerHTML = '<p style="color: var(--text-muted); grid-column: 1/-1; text-align: center;">Henüz eklenmiş bir proje yok. Yukarıdan yeni bir proje oluşturun.</p>';
+        const option = document.createElement('option');
+        option.textContent = 'Önce proje ekleyin...';
+        option.disabled = true;
+        option.selected = true;
+        projeSecEl.appendChild(option);
+        
+        // Proje yoksa sayacı kitleyelim
+        document.getElementById('baslatBtn').disabled = true;
         return;
+    } else {
+        document.getElementById('baslatBtn').disabled = false;
     }
 
     projeler.forEach(proje => {
@@ -203,7 +194,7 @@ const projeSecSelect = document.getElementById('projeSec');
 const yeniProjeFormu = document.querySelector('.yeniProjeFormu');
 
 baslatBtn.addEventListener('click', () => {
-    if (calisiyorMu) return;
+    if (calisiyorMu || projeler.length === 0) return;
     
     calisiyorMu = true;
     baslatBtn.disabled = true;

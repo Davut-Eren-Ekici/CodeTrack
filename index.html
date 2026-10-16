@@ -14,12 +14,19 @@
 
 <body>
     <div class="app-container">
-        <header>
-            <div class="logo">
-                <span class="logo-icon">⚡</span>
-                <span class="logo-text">CodeTrack</span>
+        <header class="d-flex justify-content-between align-items-center mb-2">
+            <div class="logo d-flex align-items-center gap-2">
+                <span class="logo-icon fs-3">⚡</span>
+                <span class="logo-text fs-4 fw-bold">CodeTrack</span>
             </div>
-            <div class="badge-status">🟢 Sistem Aktif</div>
+            <div class="d-flex align-items-center gap-3">
+                <div class="badge-status">🟢 Sistem Aktif</div>
+                <button id="themeToggleBtn"
+                    class="btn btn-outline-secondary btn-sm rounded-circle p-2 d-flex align-items-center justify-content-center"
+                    style="width: 38px; height: 38px;" title="Tema Değiştir">
+                    ☀️
+                </button>
+            </div>
         </header>
 
         <div class="top-grid">
@@ -47,7 +54,7 @@
                         <label for="teknolojiler">Teknolojiler (Virgülle ayırın)</label>
                         <input type="text" id="teknolojiler" placeholder="Örn: HTML, CSS, JS" required>
                     </div>
-                    <button type="submit" class="btn btn-primary">Proje Oluştur</button>
+                    <button type="submit" class="btn btn-primary w-100 mt-2">Proje Oluştur</button>
                 </form>
             </div>
         </div>
@@ -89,21 +96,6 @@
         </div>
     </div>
 
-    <header class="d-flex justify-content-between align-items-center mb-4">
-        <div class="logo d-flex align-items-center gap-2">
-            <span class="logo-icon fs-3">⚡</span>
-            <span class="logo-text fs-4 fw-bold">CodeTrack</span>
-        </div>
-        <div class="d-flex align-items-center gap-3">
-            <div class="badge-status">🟢 Sistem Aktif</div>
-            <!-- YENİ: Tema Değiştirme Butonu -->
-            <button id="themeToggleBtn"
-                class="btn btn-outline-secondary btn-sm rounded-circle p-2 d-flex align-items-center justify-content: center;"
-                style="width: 38px; height: 38px;" title="Tema Değiştir">
-                ☀️
-            </button>
-        </div>
-    </header>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
         integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
         crossorigin="anonymous"></script>
