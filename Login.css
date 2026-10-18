@@ -19,12 +19,14 @@ body {
     height: 450px;
     background: transparent;
     border: 2px solid #0ef;
+    box-shadow: 0 0 25px #0ef;
+    overflow: hidden;
 }
 
 .wrapper .from-box.login {
     left: 0;
-    padding: 0 40px;
-
+    padding: 0 60px 0 40px;
+    display: none;
 }
 
 .wrapper .from-box {
@@ -165,6 +167,7 @@ body {
     right: 0;
     text-align: right;
     padding: 0 40px 60px 90px;
+     display: none;
 }
 
 .info-text h2{
@@ -178,4 +181,16 @@ body {
     font-size: 16px;
     color: #fff;
 
+}
+.wrapper .bg-animate {
+    position: absolute;
+    top: -4px;
+    right: 0;
+    width: 850px;
+    height: 600px;
+    background: linear-gradient(45deg,#081b29,#0ef);
+    border-bottom: 3px solid #0ef;
+    /* transform: rotate(10deg)skewY(40deg); */
+    transform: rotate(0)skewY(0);
+    transform-origin: bottom right;
 }
