@@ -1,6 +1,25 @@
+const wrapper= document.querySelector(".wrapper");
+const registerLink= document.querySelector(".logreg-link");
+const loginLink= document.querySelector(".login-link");
+
+registerLink.onclick = () => {
+    wrapper.classList.add('active');
+
+}
+
+loginLink.onclick = () => {
+    wrapper.classList.remove('active');
+    
+}
+
+
+
+
 // --- Dark / Light Mode Yönetimi ---
 const themeToggleBtn = document.getElementById('themeToggleBtn');
 const htmlElement = document.documentElement;
+
+
 
 const kaydedilenTema = localStorage.getItem('codeTrackTheme') || 'dark';
 htmlElement.setAttribute('data-bs-theme', kaydedilenTema);
@@ -258,5 +277,7 @@ yeniProjeFormu.addEventListener('submit', (e) => {
     adInput.value = '';
     techInput.value = '';
 });
+
+
 
 arayuzCiz();
