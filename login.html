@@ -18,17 +18,19 @@
         <div class="from-box login">
             <h2 class="animation" style="--i:0; --j:21;">Login</h2>
             <form action="#" name="LOGIN" method="post">
-                <div class="input-box animation" style="--i:1; --j:22;">
-                    <input type="text" required>
-                    <label>Kullanıcı Adı</label>
-                    <i class="bx bx-user"></i>
-                </div>
-                <div class="input-box animation" style="--i:2; --j:23;">
-                    <input type="password" required>
-                    <label>Şifre</label>
-                    <i class="bx bx-lock"></i>
-                </div>
-                <button type="submit" class="btn animation" style="--i:3; --j:24;">Login</button>
+                <form id="loginForm">
+                    <div class="input-box animation" style="--i:1; --j:22;">
+                        <input type="text" id="loginUsername" required>
+                        <label>Kullanıcı Adı</label>
+                        <i class="bx bx-user"></i>
+                    </div>
+                    <div class="input-box animation" style="--i:2; --j:23;">
+                        <input type="password" id="loginPassword" required>
+                        <label>Şifre</label>
+                        <i class="bx bx-lock"></i>
+                    </div>
+                    <button type="submit" class="btn animation" style="--i:3; --j:24;">Giriş Yap</button>
+                </form>
                 <div class="logreg-link animation" style="--i:4; --j:25;">
                     <p>Hesabınız yok mu?<a href="#" class="register-link"> Hesap Oluştur</a></p>
                 </div>
@@ -36,7 +38,8 @@
         </div>
         <div class="info-text login">
             <h2 class="animation" style="--i:0; --j:20;">CodeTrack' a Hoşgeldİnİz</h2>
-            <p class="animation" style="--i:1; --j:21;">Kodlama süreçlerinizi analiz edin, verimliliğinizi kolayca artırın.</p>
+            <p class="animation" style="--i:1; --j:21;">Kodlama süreçlerinizi analiz edin, verimliliğinizi kolayca
+                artırın.</p>
         </div>
 
         <!-- kayıt ol kodu -->
@@ -67,11 +70,11 @@
         </div>
         <div class="info-text register">
             <h2 class="animation" style="--i:17; --j:0;">CodeTrack' a Hoşgeldİnİz</h2>
-            <p class="animation" style="--i:18; --j:1;">Kodlama süreçlerinizi analiz edin,<br> 
+            <p class="animation" style="--i:18; --j:1;">Kodlama süreçlerinizi analiz edin,<br>
                 verimliliğinizi kolayca artırın.</p>
         </div>
     </div>
-<script src="script.js"></script>
+    <script src="script.js"></script>
 </body>
 
 </html>
