@@ -13,7 +13,7 @@ const userSchema = new mongoose.Schema({
         required: true
     },
     createdAt: {
-        type: true,// tarih
+        type: Date,// tarih
         default: Date.now //Kayıt olduğum anın tarihini otomatik atar
 
     }
