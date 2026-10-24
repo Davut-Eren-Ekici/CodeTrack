@@ -105,10 +105,14 @@ if (themeToggleBtn) {
 
 
 // --- 3. PROJE VE SAYAÇ YÖNETİMİ (index.html için) ---
+// --- 3. PROJE VE SAYAÇ YÖNETİMİ (Kullanıcıya Özel) ---
 const projeListesiEl = document.getElementById('projeListesi');
 if (projeListesiEl) {
-    let kayitliVeri = localStorage.getItem('codeTrackProjeler');
-    let kayitliGunler = localStorage.getItem('codeTrackAktiviteler');
+    // Giriş yapan kullanıcı adını alalım (Yoksa 'misafir' kullansın)
+    const aktifKullanici = localStorage.getItem('username') || 'misafir';
+
+    let kayitliVeri = localStorage.getItem(`codeTrackProjeler_${aktifKullanici}`);
+    let kayitliGunler = localStorage.getItem(`codeTrackAktiviteler_${aktifKullanici}`);
 
     let projeler = [];
     let gunlukAktiviteler = {};
@@ -148,8 +152,8 @@ if (projeListesiEl) {
     }
 
     function verileriKaydet() {
-        localStorage.setItem('codeTrackProjeler', JSON.stringify(projeler));
-        localStorage.setItem('codeTrackAktiviteler', JSON.stringify(gunlukAktiviteler));
+        localStorage.setItem(`codeTrackProjeler_${aktifKullanici}`, JSON.stringify(projeler));
+        localStorage.setItem(`codeTrackAktiviteler_${aktifKullanici}`, JSON.stringify(gunlukAktiviteler));
     }
 
     function saniyeFormatla(toplamSaniye) {
