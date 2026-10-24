@@ -12,7 +12,7 @@ const app = express();
 
 // --- 1. ARA YAZILIMLAR (MIDDLEWARES) ---
 app.use(express.json()); // Gelen isteklerdeki JSON verilerini okuyabilmemizi sağlar
-app.use(cors());         // Farklı portlardaki (örn: 5500 ve 5000) uygulamaların konuşmasına izin verir
+app.use(cors());         // Farklı portlardaki (örnk: 5500 ve 5000) uygulamaların konuşmasına izin verir
 
 // --- 2. VERİTABANI BAĞLANTISI ---
 mongoose.connect(process.env.MONGO_URI)
