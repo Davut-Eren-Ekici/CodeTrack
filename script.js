@@ -1,283 +1,363 @@
-const wrapper= document.querySelector(".wrapper");
-const registerLink= document.querySelector(".logreg-link");
-const loginLink= document.querySelector(".login-link");
+// --- 1. GİRİŞ VE KAYIT İŞLEMLERİ (login.html için) ---
+const wrapper = document.querySelector('.wrapper');
+const registerLink = document.querySelector('.register-link');
+const loginLink = document.querySelector('.login-link');
 
-registerLink.onclick = () => {
-    wrapper.classList.add('active');
-
+if (registerLink && wrapper) {
+    registerLink.onclick = (e) => {
+        e.preventDefault();
+        wrapper.classList.add('active');
+    };
 }
 
-loginLink.onclick = () => {
-    wrapper.classList.remove('active');
-    
+if (loginLink && wrapper) {
+    loginLink.onclick = (e) => {
+        e.preventDefault();
+        wrapper.classList.remove('active');
+    };
+}
+
+const loginForm = document.getElementById('loginForm');
+if (loginForm) {
+    loginForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const username = document.getElementById('loginUsername').value.trim();
+        const password = document.getElementById('loginPassword').value.trim();
+
+        try {
+            const response = await fetch('http://localhost:5000/api/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username, password })
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                localStorage.setItem('token', data.token);
+                localStorage.setItem('username', data.username);
+                alert('Giriş başarılı! Yönlendiriliyorsunuz...');
+                window.location.href = 'index.html';
+            } else {
+                alert(data.message || 'Giriş başarısız!');
+            }
+        } catch (error) {
+            console.error('Bağlantı hatası:', error);
+            alert('Sunucuya ulaşılamıyor!');
+        }
+    });
+}
+
+const registerForm = document.querySelector('.from-box.register form');
+if (registerForm) {
+    registerForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const inputs = registerForm.querySelectorAll('input');
+        const username = inputs[0].value.trim();
+        const password = inputs[1].value.trim();
+        const confirmPassword = inputs[2].value.trim();
+
+        if (password !== confirmPassword) {
+            alert('Şifreler birbiriyle uyuşmuyor!');
+            return;
+        }
+
+        try {
+            const response = await fetch('http://localhost:5000/api/register', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username, password })
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                alert('Kayıt başarılı! Şimdi giriş yapabilirsiniz.');
+                wrapper.classList.remove('active');
+                registerForm.reset();
+            } else {
+                alert(data.message || 'Kayıt olurken bir hata oluştu.');
+            }
+        } catch (error) {
+            console.error('Bağlantı hatası:', error);
+            alert('Sunucuya ulaşılamıyor!');
+        }
+    });
 }
 
 
-
-
-// --- Dark / Light Mode Yönetimi ---
+// --- 2. DARK / LIGHT MODE YÖNETİMİ (index.html için) ---
 const themeToggleBtn = document.getElementById('themeToggleBtn');
-const htmlElement = document.documentElement;
+if (themeToggleBtn) {
+    const htmlElement = document.documentElement;
+    const kaydedilenTema = localStorage.getItem('codeTrackTheme') || 'dark';
+    htmlElement.setAttribute('data-bs-theme', kaydedilenTema);
+    themeToggleBtn.textContent = kaydedilenTema === 'dark' ? '☀️' : '🌙';
 
-
-
-const kaydedilenTema = localStorage.getItem('codeTrackTheme') || 'dark';
-htmlElement.setAttribute('data-bs-theme', kaydedilenTema);
-themeToggleBtn.textContent = kaydedilenTema === 'dark' ? '☀️' : '🌙';
-
-themeToggleBtn.addEventListener('click', () => {
-    const mevcutTema = htmlElement.getAttribute('data-bs-theme');
-    const yeniTema = mevcutTema === 'dark' ? 'light' : 'dark';
-
-    htmlElement.setAttribute('data-bs-theme', yeniTema);
-    themeToggleBtn.textContent = yeniTema === 'dark' ? '☀️' : '🌙';
-    localStorage.setItem('codeTrackTheme', yeniTema);
-});
-
-// --- Veri Yönetimi (Boş Başlangıç) ---
-let kayitliVeri = localStorage.getItem('codeTrackProjeler');
-let kayitliGunler = localStorage.getItem('codeTrackAktiviteler');
-
-let projeler = [];
-let gunlukAktiviteler = {};
-
-try {
-    projeler = kayitliVeri ? JSON.parse(kayitliVeri) : [];
-} catch (e) {
-    projeler = [];
+    themeToggleBtn.addEventListener('click', () => {
+        const mevcutTema = htmlElement.getAttribute('data-bs-theme');
+        const yeniTema = mevcutTema === 'dark' ? 'light' : 'dark';
+        htmlElement.setAttribute('data-bs-theme', yeniTema);
+        themeToggleBtn.textContent = yeniTema === 'dark' ? '☀️' : '🌙';
+        localStorage.setItem('codeTrackTheme', yeniTema);
+    });
 }
 
-try {
-    gunlukAktiviteler = kayitliGunler ? JSON.parse(kayitliGunler) : {};
-} catch (e) {
-    gunlukAktiviteler = {};
-}
 
-let timerInterval = null;
-let gecenSaniye = 0;
-let calisiyorMu = false;
+// --- 3. PROJE VE SAYAÇ YÖNETİMİ (index.html için) ---
+const projeListesiEl = document.getElementById('projeListesi');
+if (projeListesiEl) {
+    let kayitliVeri = localStorage.getItem('codeTrackProjeler');
+    let kayitliGunler = localStorage.getItem('codeTrackAktiviteler');
 
-function yerelTarihStr(tarih) {
-    const yil = tarih.getFullYear();
-    const ay = String(tarih.getMonth() + 1).padStart(2, '0');
-    const gun = String(tarih.getDate()).padStart(2, '0');
-    return `${yil}-${ay}-${gun}`;
-}
+    let projeler = [];
+    let gunlukAktiviteler = {};
 
-function formatGosterimTarihi(tarih) {
-    const yil = tarih.getFullYear();
-    const ay = String(tarih.getMonth() + 1).padStart(2, '0');
-    const gun = String(tarih.getDate()).padStart(2, '0');
-    return `${gun}-${ay}-${yil}`;
-}
+    try {
+        projeler = kayitliVeri ? JSON.parse(kayitliVeri) : [];
+    } catch (e) {
+        projeler = [];
+    }
 
-function bugunTarihStr() {
-    return yerelTarihStr(new Date());
-}
+    try {
+        gunlukAktiviteler = kayitliGunler ? JSON.parse(kayitliGunler) : {};
+    } catch (e) {
+        gunlukAktiviteler = {};
+    }
 
-function verileriKaydet() {
-    localStorage.setItem('codeTrackProjeler', JSON.stringify(projeler));
-    localStorage.setItem('codeTrackAktiviteler', JSON.stringify(gunlukAktiviteler));
-}
+    let timerInterval = null;
+    let gecenSaniye = 0;
+    let calisiyorMu = false;
 
-function saniyeFormatla(toplamSaniye) {
-    const saat = Math.floor(toplamSaniye / 3600);
-    const dakika = Math.floor((toplamSaniye % 3600) / 60);
-    const saniye = toplamSaniye % 60;
+    function yerelTarihStr(tarih) {
+        const yil = tarih.getFullYear();
+        const ay = String(tarih.getMonth() + 1).padStart(2, '0');
+        const gun = String(tarih.getDate()).padStart(2, '0');
+        return `${yil}-${ay}-${gun}`;
+    }
 
-    return `${String(saat).padStart(2, '0')}:${String(dakika).padStart(2, '0')}:${String(saniye).padStart(2, '0')}`;
-}
+    function formatGosterimTarihi(tarih) {
+        const yil = tarih.getFullYear();
+        const ay = String(tarih.getMonth() + 1).padStart(2, '0');
+        const gun = String(tarih.getDate()).padStart(2, '0');
+        return `${gun}-${ay}-${yil}`;
+    }
 
-function heatmapCiz() {
-    const gridEl = document.getElementById('heatmapGrid');
-    const monthsEl = document.getElementById('heatmapMonths');
-    gridEl.innerHTML = '';
-    monthsEl.innerHTML = '';
+    function bugunTarihStr() {
+        return yerelTarihStr(new Date());
+    }
 
-    const bugun = new Date();
-    bugun.setHours(0, 0, 0, 0);
+    function verileriKaydet() {
+        localStorage.setItem('codeTrackProjeler', JSON.stringify(projeler));
+        localStorage.setItem('codeTrackAktiviteler', JSON.stringify(gunlukAktiviteler));
+    }
 
-    const gun = bugun.getDay();
-    const farkToPazartesi = gun === 0 ? -6 : 1 - gun;
-    const buHaftaPazartesi = new Date(bugun);
-    buHaftaPazartesi.setDate(bugun.getDate() + farkToPazartesi);
+    function saniyeFormatla(toplamSaniye) {
+        const saat = Math.floor(toplamSaniye / 3600);
+        const dakika = Math.floor((toplamSaniye % 3600) / 60);
+        const saniye = toplamSaniye % 60;
+        return `${String(saat).padStart(2, '0')}:${String(dakika).padStart(2, '0')}:${String(saniye).padStart(2, '0')}`;
+    }
 
-    const baslangicTarihi = new Date(buHaftaPazartesi);
-    baslangicTarihi.setDate(buHaftaPazartesi.getDate() - (51 * 7));
+    function heatmapCiz() {
+        const gridEl = document.getElementById('heatmapGrid');
+        const monthsEl = document.getElementById('heatmapMonths');
+        if (!gridEl || !monthsEl) return;
+        
+        gridEl.innerHTML = '';
+        monthsEl.innerHTML = '';
 
-    let eklenenAylar = new Set();
-    let simdikiTarih = new Date(baslangicTarihi);
+        const bugun = new Date();
+        bugun.setHours(0, 0, 0, 0);
 
-    for (let i = 0; i < 364; i++) {
-        const tarihStr = yerelTarihStr(simdikiTarih);
-        const gosterimTarihiStr = formatGosterimTarihi(simdikiTarih);
-        const ayAdi = simdikiTarih.toLocaleString('en-US', { month: 'short' });
+        const gun = bugun.getDay();
+        const farkToPazartesi = gun === 0 ? -6 : 1 - gun;
+        const buHaftaPazartesi = new Date(bugun);
+        buHaftaPazartesi.setDate(bugun.getDate() + farkToPazartesi);
 
-        if (!eklenenAylar.has(ayAdi) && simdikiTarih.getDate() <= 7) {
-            eklenenAylar.add(ayAdi);
+        const baslangicTarihi = new Date(buHaftaPazartesi);
+        baslangicTarihi.setDate(buHaftaPazartesi.getDate() - (51 * 7));
+
+        let eklenenAylar = new Set();
+        let simdikiTarih = new Date(baslangicTarihi);
+
+        for (let i = 0; i < 364; i++) {
+            const tarihStr = yerelTarihStr(simdikiTarih);
+            const gosterimTarihiStr = formatGosterimTarihi(simdikiTarih);
+            const ayAdi = simdikiTarih.toLocaleString('en-US', { month: 'short' });
+
+            if (!eklenenAylar.has(ayAdi) && simdikiTarih.getDate() <= 7) {
+                eklenenAylar.add(ayAdi);
+            }
+
+            const calismaSuresi = gunlukAktiviteler[tarihStr] || 0;
+
+            let seviye = 0;
+            if (simdikiTarih > bugun) {
+                seviye = 0;
+            } else {
+                if (calismaSuresi > 0 && calismaSuresi <= 1800) seviye = 1;
+                else if (calismaSuresi > 1800 && calismaSuresi <= 5400) seviye = 2;
+                else if (calismaSuresi > 5400 && calismaSuresi <= 10800) seviye = 3;
+                else if (calismaSuresi > 10800) seviye = 4;
+            }
+
+            const kare = document.createElement('div');
+            kare.className = `heatmap-square level-${seviye}`;
+            
+            if (simdikiTarih > bugun) {
+                kare.style.opacity = '0.15';
+            }
+            
+            kare.title = `${gosterimTarihiStr}: ${Math.round(calismaSuresi / 60)} dakika çalışma`;
+            gridEl.appendChild(kare);
+
+            simdikiTarih.setDate(simdikiTarih.getDate() + 1);
         }
 
-        const calismaSuresi = gunlukAktiviteler[tarihStr] || 0;
+        eklenenAylar.forEach(ay => {
+            const span = document.createElement('span');
+            span.textContent = ay;
+            monthsEl.appendChild(span);
+        });
+    }
 
-        let seviye = 0;
-        if (simdikiTarih > bugun) {
-            seviye = 0;
+    function arayuzCiz() {
+        const projeSecEl = document.getElementById('projeSec');
+        const baslatBtn = document.getElementById('baslatBtn');
+
+        projeListesiEl.innerHTML = '';
+        if (projeSecEl) projeSecEl.innerHTML = '';
+
+        if (projeler.length === 0) {
+            projeListesiEl.innerHTML = '<p style="color: var(--text-muted); grid-column: 1/-1; text-align: center;">Henüz eklenmiş bir proje yok. Yukarıdan yeni bir proje oluşturun.</p>';
+            if (projeSecEl) {
+                const option = document.createElement('option');
+                option.textContent = 'Önce proje ekleyin...';
+                option.disabled = true;
+                option.selected = true;
+                projeSecEl.appendChild(option);
+            }
+            if (baslatBtn) baslatBtn.disabled = true;
+            heatmapCiz();
+            return;
         } else {
-            if (calismaSuresi > 0 && calismaSuresi <= 1800) seviye = 1;
-            else if (calismaSuresi > 1800 && calismaSuresi <= 5400) seviye = 2;
-            else if (calismaSuresi > 5400 && calismaSuresi <= 10800) seviye = 3;
-            else if (calismaSuresi > 10800) seviye = 4;
+            if (baslatBtn) baslatBtn.disabled = false;
         }
 
-        const kare = document.createElement('div');
-        kare.className = `heatmap-square level-${seviye}`;
-        
-        if (simdikiTarih > bugun) {
-            kare.style.opacity = '0.15';
-        }
-        
-        kare.title = `${gosterimTarihiStr}: ${Math.round(calismaSuresi / 60)} dakika çalışma`;
-        gridEl.appendChild(kare);
+        projeler.forEach(proje => {
+            if (projeSecEl) {
+                const option = document.createElement('option');
+                option.value = proje.id;
+                option.textContent = proje.ad;
+                projeSecEl.appendChild(option);
+            }
 
-        simdikiTarih.setDate(simdikiTarih.getDate() + 1);
+            const taglarHTML = proje.teknolojiler
+                .map(tech => `<span class="tag">${tech.trim()}</span>`)
+                .join('');
+
+            const kart = document.createElement('div');
+            kart.className = 'project-card';
+            kart.innerHTML = `
+                <div>
+                    <div class="project-title">💻 ${proje.ad}</div>
+                    <div class="tech-tags">${taglarHTML}</div>
+                </div>
+                <div class="card-footer">
+                    <span class="time-spent">⏱ ${saniyeFormatla(proje.sureSaniye)}</span>
+                    <button class="btn-delete" onclick="projeSil(${proje.id})" title="Projeyi Sil">🗑️</button>
+                </div>
+            `;
+
+            projeListesiEl.appendChild(kart);
+        });
+
+        heatmapCiz();
     }
 
-    eklenenAylar.forEach(ay => {
-        const span = document.createElement('span');
-        span.textContent = ay;
-        monthsEl.appendChild(span);
-    });
-}
-
-function arayuzCiz() {
-    const projeListesiEl = document.getElementById('projeListesi');
-    const projeSecEl = document.getElementById('projeSec');
-
-    projeListesiEl.innerHTML = '';
-    projeSecEl.innerHTML = '';
-
-    if (projeler.length === 0) {
-        projeListesiEl.innerHTML = '<p style="color: var(--text-muted); grid-column: 1/-1; text-align: center;">Henüz eklenmiş bir proje yok. Yukarıdan yeni bir proje oluşturun.</p>';
-        const option = document.createElement('option');
-        option.textContent = 'Önce proje ekleyin...';
-        option.disabled = true;
-        option.selected = true;
-        projeSecEl.appendChild(option);
-        
-        // Proje yoksa sayacı kitleyelim
-        document.getElementById('baslatBtn').disabled = true;
-        return;
-    } else {
-        document.getElementById('baslatBtn').disabled = false;
-    }
-
-    projeler.forEach(proje => {
-        const option = document.createElement('option');
-        option.value = proje.id;
-        option.textContent = proje.ad;
-        projeSecEl.appendChild(option);
-
-        const taglarHTML = proje.teknolojiler
-            .map(tech => `<span class="tag">${tech.trim()}</span>`)
-            .join('');
-
-        const kart = document.createElement('div');
-        kart.className = 'project-card';
-        kart.innerHTML = `
-            <div>
-                <div class="project-title">💻 ${proje.ad}</div>
-                <div class="tech-tags">${taglarHTML}</div>
-            </div>
-            <div class="card-footer">
-                <span class="time-spent">⏱ ${saniyeFormatla(proje.sureSaniye)}</span>
-                <button class="btn-delete" onclick="projeSil(${proje.id})" title="Projeyi Sil">🗑️</button>
-            </div>
-        `;
-
-        projeListesiEl.appendChild(kart);
-    });
-
-    heatmapCiz();
-}
-
-function projeSil(id) {
-    projeler = projeler.filter(p => p.id !== id);
-    verileriKaydet();
-    arayuzCiz();
-}
-
-const baslatBtn = document.getElementById('baslatBtn');
-const durdurBtn = document.getElementById('durdurBtn');
-const timerDisplay = document.getElementById('timer');
-const projeSecSelect = document.getElementById('projeSec');
-const yeniProjeFormu = document.querySelector('.yeniProjeFormu');
-
-baslatBtn.addEventListener('click', () => {
-    if (calisiyorMu || projeler.length === 0) return;
-    
-    calisiyorMu = true;
-    baslatBtn.disabled = true;
-    durdurBtn.disabled = false;
-    projeSecSelect.disabled = true;
-
-    timerInterval = setInterval(() => {
-        gecenSaniye++;
-        timerDisplay.textContent = saniyeFormatla(gecenSaniye);
-    }, 1000);
-});
-
-durdurBtn.addEventListener('click', () => {
-    if (!calisiyorMu) return;
-
-    clearInterval(timerInterval);
-    calisiyorMu = false;
-    baslatBtn.disabled = false;
-    durdurBtn.disabled = true;
-    projeSecSelect.disabled = false;
-
-    const secilenProjeId = Number(projeSecSelect.value);
-    const hedefProje = projeler.find(p => p.id === secilenProjeId);
-
-    if (hedefProje) {
-        hedefProje.sureSaniye += gecenSaniye;
-        
-        const bugun = bugunTarihStr();
-        gunlukAktiviteler[bugun] = (gunlukAktiviteler[bugun] || 0) + gecenSaniye;
-
+    window.projeSil = function(id) {
+        projeler = projeler.filter(p => p.id !== id);
         verileriKaydet();
         arayuzCiz();
     }
 
-    gecenSaniye = 0;
-    timerDisplay.textContent = "00:00:00";
-});
+    const baslatBtn = document.getElementById('baslatBtn');
+    const durdurBtn = document.getElementById('durdurBtn');
+    const timerDisplay = document.getElementById('timer');
+    const projeSecSelect = document.getElementById('projeSec');
+    const yeniProjeFormu = document.querySelector('.yeniProjeFormu');
 
-yeniProjeFormu.addEventListener('submit', (e) => {
-    e.preventDefault();
+    if (baslatBtn && durdurBtn && timerDisplay && projeSecSelect) {
+        baslatBtn.addEventListener('click', () => {
+            if (calisiyorMu || projeler.length === 0) return;
+            
+            calisiyorMu = true;
+            baslatBtn.disabled = true;
+            durdurBtn.disabled = false;
+            projeSecSelect.disabled = true;
 
-    const adInput = document.getElementById('projeAdi');
-    const techInput = document.getElementById('teknolojiler');
+            timerInterval = setInterval(() => {
+                gecenSaniye++;
+                timerDisplay.textContent = saniyeFormatla(gecenSaniye);
+            }, 1000);
+        });
 
-    const yeniAd = adInput.value.trim();
-    const yeniTeknolojiler = techInput.value.split(',').map(t => t.trim());
+        durdurBtn.addEventListener('click', () => {
+            if (!calisiyorMu) return;
 
-    if (!yeniAd) return;
+            clearInterval(timerInterval);
+            calisiyorMu = false;
+            baslatBtn.disabled = false;
+            durdurBtn.disabled = true;
+            projeSecSelect.disabled = false;
 
-    const yeniProje = {
-        id: Date.now(),
-        ad: yeniAd,
-        teknolojiler: yeniTeknolojiler,
-        sureSaniye: 0
-    };
+            const secilenProjeId = Number(projeSecSelect.value);
+            const hedefProje = projeler.find(p => p.id === secilenProjeId);
 
-    projeler.push(yeniProje);
-    verileriKaydet();
+            if (hedefProje) {
+                hedefProje.sureSaniye += gecenSaniye;
+                
+                const bugun = bugunTarihStr();
+                gunlukAktiviteler[bugun] = (gunlukAktiviteler[bugun] || 0) + gecenSaniye;
+
+                verileriKaydet();
+                arayuzCiz();
+            }
+
+            gecenSaniye = 0;
+            timerDisplay.textContent = "00:00:00";
+        });
+    }
+
+    if (yeniProjeFormu) {
+        yeniProjeFormu.addEventListener('submit', (e) => {
+            e.preventDefault();
+
+            const adInput = document.getElementById('projeAdi');
+            const techInput = document.getElementById('teknolojiler');
+            if (!adInput || !techInput) return;
+
+            const yeniAd = adInput.value.trim();
+            const yeniTeknolojiler = techInput.value.split(',').map(t => t.trim());
+
+            if (!yeniAd) return;
+
+            const yeniProje = {
+                id: Date.now(),
+                ad: yeniAd,
+                teknolojiler: yeniTeknolojiler,
+                sureSaniye: 0
+            };
+
+            projeler.push(yeniProje);
+            verileriKaydet();
+            arayuzCiz();
+
+            adInput.value = '';
+            techInput.value = '';
+        });
+    }
+
     arayuzCiz();
-
-    adInput.value = '';
-    techInput.value = '';
-});
-
-
-
-arayuzCiz();
+}
