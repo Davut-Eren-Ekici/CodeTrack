@@ -15,19 +15,22 @@ const app = express();
 app.use(express.json()); 
 app.use(cors()); 
 
-// --- 1.1. STATİK DOSYALAR (Render'da Frontend'i sunmak için) ---
-app.use(express.static(path.join(__dirname)));
+// --- 1. ARA YAZILIMLAR (MIDDLEWARES) ---
+app.use(express.json()); 
+app.use(cors()); 
 
 // --- 2. VERİTABANI BAĞLANTISI ---
 mongoose.connect(process.env.MONGO_URI)
     .then(() => console.log('MongoDB Veritabanı Bağlantısı Başarılı!'))
     .catch((err) => console.error('Veritabanı bağlantı hatası:', err));
 
-// --- 3. ANA SAYFA YÖNLENDİRMESİ ---
-// --- ANA SAYFA YÖNLENDİRMESİ ---
+// --- 3. ANA SAYFA YÖNLENDİRMESİ (En üste alındı) ---
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'login.html'));
 });
+
+// --- 4. STATİK DOSYALAR (Ana sayfa yönlendirmesinden sonra gelmeli) ---
+app.use(express.static(path.join(__dirname)));
 
 // --- 4. KAYIT OL (REGISTER) ENDPOINT'İ ---
 app.post('/api/register', async (req, res) => {
