@@ -1,18 +1,27 @@
+// --- ANA SAYFA YÖNLENDİRMESİ ---
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'login.html'));
+});
+
 const express = require('express');
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const cors = require('cors');
+const path = require('path'); // <-- Statik dosyalar için eklendi
 require('dotenv').config();
 
-// Daha önce yazdığım veritabanı modelini içeri aktarıyoruz
+// Veritabanı modelini içeri aktarıyoruz
 const User = require('./models/User');
 
 const app = express();
 
 // --- 1. ARA YAZILIMLAR (MIDDLEWARES) ---
-app.use(express.json()); // Gelen isteklerdeki JSON verilerini okuyabilmemizi sağlar
-app.use(cors());         // Farklı portlardaki (örnk: 5500 ve 5000) uygulamaların konuşmasına izin verir
+app.use(express.json()); 
+app.use(cors()); 
+
+// --- 1.1. STATİK DOSYALAR (Render'da Frontend'i sunmak için) ---
+app.use(express.static(path.join(__dirname)));
 
 // --- 2. VERİTABANI BAĞLANTISI ---
 mongoose.connect(process.env.MONGO_URI)
@@ -24,17 +33,14 @@ app.post('/api/register', async (req, res) => {
     try {
         const { username, password } = req.body;
 
-        // Kullanıcı daha önce var mı kontrol et
         const existingUser = await User.findOne({ username });
         if (existingUser) {
             return res.status(400).json({ message: 'Bu kullanıcı adı zaten alınmış!' });
         }
 
-        // Şifreyi güvenli hale getirmek için hash'le (şifrele)
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(password, salt);
 
-        // Yeni kullanıcı nesnesini oluştur ve veritabanına kaydet
         const newUser = new User({
             username,
             password: hashedPassword
@@ -53,26 +59,22 @@ app.post('/api/login', async (req, res) => {
     try {
         const { username, password } = req.body;
 
-        // Kullanıcı veritabanında var mı?
         const user = await User.findOne({ username });
         if (!user) {
             return res.status(400).json({ message: 'Kullanıcı bulunamadı!' });
         }
 
-        // Girilen şifre ile veritabanındaki hash'lenmiş şifre uyuşuyor mu?
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) {
             return res.status(400).json({ message: 'Hatalı şifre!' });
         }
 
-        // Her şey yolundaysa kullanıcıya özel bir "Dijital Kimlik Kartı" (JWT Token) üret
         const token = jwt.sign(
             { userId: user._id, username: user.username },
             process.env.JWT_SECRET,
-            { expiresIn: '1h' } // 1 saat geçerli
+            { expiresIn: '1h' }
         );
 
-        // Başarılı yanıtı ve token'ı frontend'e gönder
         res.json({ message: 'Giriş başarılı!', token, username: user.username });
 
     } catch (error) {

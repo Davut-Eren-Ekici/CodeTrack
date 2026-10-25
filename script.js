@@ -25,7 +25,8 @@ if (loginForm) {
         const password = document.getElementById('loginPassword').value.trim();
 
         try {
-            const response = await fetch('http://localhost:5000/api/login', {
+            // Canlı ortam uyumlu göreli yol kullanıldı
+            const response = await fetch('/api/login', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ username, password })
@@ -63,7 +64,8 @@ if (registerForm) {
         }
 
         try {
-            const response = await fetch('http://localhost:5000/api/register', {
+            // Canlı ortam uyumlu göreli yol kullanıldı
+            const response = await fetch('/api/register', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ username, password })
@@ -104,11 +106,9 @@ if (themeToggleBtn) {
 }
 
 
-// --- 3. PROJE VE SAYAÇ YÖNETİMİ (index.html için) ---
 // --- 3. PROJE VE SAYAÇ YÖNETİMİ (Kullanıcıya Özel) ---
 const projeListesiEl = document.getElementById('projeListesi');
 if (projeListesiEl) {
-    // Giriş yapan kullanıcı adını alalım (Yoksa 'misafir' kullansın)
     const aktifKullanici = localStorage.getItem('username') || 'misafir';
 
     let kayitliVeri = localStorage.getItem(`codeTrackProjeler_${aktifKullanici}`);
