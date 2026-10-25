@@ -24,6 +24,7 @@ mongoose.connect(process.env.MONGO_URI)
     .catch((err) => console.error('Veritabanı bağlantı hatası:', err));
 
 // --- 3. ANA SAYFA YÖNLENDİRMESİ ---
+// --- ANA SAYFA YÖNLENDİRMESİ ---
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'login.html'));
 });
