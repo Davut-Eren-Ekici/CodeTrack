@@ -1,14 +1,9 @@
-// --- ANA SAYFA YÖNLENDİRMESİ ---
-app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'login.html'));
-});
-
 const express = require('express');
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const cors = require('cors');
-const path = require('path'); // <-- Statik dosyalar için eklendi
+const path = require('path');
 require('dotenv').config();
 
 // Veritabanı modelini içeri aktarıyoruz
@@ -28,7 +23,12 @@ mongoose.connect(process.env.MONGO_URI)
     .then(() => console.log('MongoDB Veritabanı Bağlantısı Başarılı!'))
     .catch((err) => console.error('Veritabanı bağlantı hatası:', err));
 
-// --- 3. KAYIT OL (REGISTER) ENDPOINT'İ ---
+// --- 3. ANA SAYFA YÖNLENDİRMESİ ---
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'login.html'));
+});
+
+// --- 4. KAYIT OL (REGISTER) ENDPOINT'İ ---
 app.post('/api/register', async (req, res) => {
     try {
         const { username, password } = req.body;
@@ -54,7 +54,7 @@ app.post('/api/register', async (req, res) => {
     }
 });
 
-// --- 4. GİRİŞ YAP (LOGIN) ENDPOINT'İ ---
+// --- 5. GİRİŞ YAP (LOGIN) ENDPOINT'İ ---
 app.post('/api/login', async (req, res) => {
     try {
         const { username, password } = req.body;
@@ -82,6 +82,6 @@ app.post('/api/login', async (req, res) => {
     }
 });
 
-// --- 5. SUNUCUYU BAŞLATMA ---
+// --- 6. SUNUCUYU BAŞLATMA ---
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Sunucu ${PORT} portunda çalışıyor...`));
