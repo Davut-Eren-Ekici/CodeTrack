@@ -55,10 +55,3 @@ Arayüze erişin:login.html dosyasını Live Server ile açarak veya tarayıcın
 Davut Eren Ekici
 
 
-<FollowUp>
-Bütün dosyaları tek bir yerde topladık. Projeyi canlıya alma (deployment) adımlarına geçmeye hazır mısın?
-</FollowUp>
-
-<ElicitationsGroup>
-- Tüm proje kodlarının ve dokümantasyonun tek bir bütün halinde sunulması
-</ElicitationsGroup>
