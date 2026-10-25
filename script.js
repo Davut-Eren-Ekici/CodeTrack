@@ -167,7 +167,7 @@ if (projeListesiEl) {
         const gridEl = document.getElementById('heatmapGrid');
         const monthsEl = document.getElementById('heatmapMonths');
         if (!gridEl || !monthsEl) return;
-        
+
         gridEl.innerHTML = '';
         monthsEl.innerHTML = '';
 
@@ -208,11 +208,11 @@ if (projeListesiEl) {
 
             const kare = document.createElement('div');
             kare.className = `heatmap-square level-${seviye}`;
-            
+
             if (simdikiTarih > bugun) {
                 kare.style.opacity = '0.15';
             }
-            
+
             kare.title = `${gosterimTarihiStr}: ${Math.round(calismaSuresi / 60)} dakika çalışma`;
             gridEl.appendChild(kare);
 
@@ -280,7 +280,7 @@ if (projeListesiEl) {
         heatmapCiz();
     }
 
-    window.projeSil = function(id) {
+    window.projeSil = function (id) {
         projeler = projeler.filter(p => p.id !== id);
         verileriKaydet();
         arayuzCiz();
@@ -295,7 +295,7 @@ if (projeListesiEl) {
     if (baslatBtn && durdurBtn && timerDisplay && projeSecSelect) {
         baslatBtn.addEventListener('click', () => {
             if (calisiyorMu || projeler.length === 0) return;
-            
+
             calisiyorMu = true;
             baslatBtn.disabled = true;
             durdurBtn.disabled = false;
@@ -321,7 +321,7 @@ if (projeListesiEl) {
 
             if (hedefProje) {
                 hedefProje.sureSaniye += gecenSaniye;
-                
+
                 const bugun = bugunTarihStr();
                 gunlukAktiviteler[bugun] = (gunlukAktiviteler[bugun] || 0) + gecenSaniye;
 
