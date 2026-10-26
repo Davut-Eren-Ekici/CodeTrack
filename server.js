@@ -23,6 +23,7 @@ app.use(cors());
 mongoose.connect(process.env.MONGO_URI)
     .then(() => console.log('MongoDB Veritabanı Bağlantısı Başarılı!'))
     .catch((err) => console.error('Veritabanı bağlantı hatası:', err));
+    
 
 // --- 3. ANA SAYFA YÖNLENDİRMESİ (En üste alındı) ---
 app.get('/', (req, res) => {
