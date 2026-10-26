@@ -2,6 +2,12 @@
 
 CodeTrack, yazılımcıların ve öğrencilerin günlük kodlama süreçlerini takip etmelerini, projelerini yönetmelerini ve GitHub tarzı aktivite ısı haritası (heatmap) ile verimliliklerini analiz etmelerini sağlayan **Full-Stack** bir web uygulamasıdır.
 
+Kodlama süreçlerinizi analiz edin, verimliliğinizi kolayca artırın.
+
+### 🚀 Canlı Demo
+Uygulamayı canlı olarak incelemek ve kullanmak için tıklayın: 
+[CodeTrack Canlı Linki](https://codetrack-t7aj.onrender.com)
+
 ---
 
 ## 🛠️ Kullanılan Teknolojiler
