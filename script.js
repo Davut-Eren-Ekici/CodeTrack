@@ -362,6 +362,7 @@ if (projeListesiEl) {
             techInput.value = '';
         });
     }
+    
 
     arayuzCiz();
 }

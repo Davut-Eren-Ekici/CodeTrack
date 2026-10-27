@@ -30,6 +30,7 @@ app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'login.html'));
 });
 
+
 // --- 4. STATİK DOSYALAR (Ana sayfa yönlendirmesinden sonra gelmeli) ---
 app.use(express.static(path.join(__dirname)));
 
