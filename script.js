@@ -363,6 +363,5 @@ if (projeListesiEl) {
         });
     }
     
-
     arayuzCiz();
 }
