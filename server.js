@@ -6,6 +6,7 @@ const cors = require('cors');
 const path = require('path');
 require('dotenv').config();
 
+
 // Veritabanı modelini içeri aktarıyoruz
 const User = require('./models/User');
 
