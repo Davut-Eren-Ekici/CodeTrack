@@ -7,8 +7,13 @@ const path = require('path');
 require('dotenv').config();
 
 
+
+
+
 // Veritabanı modelini içeri aktarıyoruz
 const User = require('./models/User');
+
+
 
 const app = express();
 

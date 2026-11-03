@@ -354,6 +354,8 @@ if (projeListesiEl) {
                 sureSaniye: 0
             };
 
+            
+
             projeler.push(yeniProje);
             verileriKaydet();
             arayuzCiz();
