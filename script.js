@@ -354,7 +354,7 @@ if (projeListesiEl) {
                 sureSaniye: 0
             };
 
-            
+
 
             projeler.push(yeniProje);
             verileriKaydet();
@@ -367,24 +367,24 @@ if (projeListesiEl) {
 
 
     // Çıkış yap butonunu seçiyoruz (HTML'deki id'ye göre)
-const logoutBtn = document.getElementById('logoutBtn');
+    const logoutBtn = document.getElementById('logoutBtn');
 
-if (logoutBtn) {
-    logoutBtn.addEventListener('click', function(e) {
-        e.preventDefault();
+    if (logoutBtn) {
+        logoutBtn.addEventListener('click', function (e) {
+            e.preventDefault();
 
-        const gecenSaniye = typeof timerRunning !== 'undefined' ? timerRunning : false; 
+            // Senin kodundaki sayaç çalışma durumunu (calisiyorMu) kontrol ediyoruz
+            if (calisiyorMu) {
+                // Sayaç açıksa uyarı ver
+                alert("Dikkat: Aktif bir sayaç çalışıyor! Çıkış yapmadan önce lütfen sayacı kapatınız.");
+            } else {
+                // Sayaç kapalıysa oturum verilerini temizle ve giriş sayfasına yönlendir
+                localStorage.removeItem('token');
+                localStorage.removeItem('username');
+                window.location.href = 'login.html';
+            }
+        });
+    }
 
-        if (isTimerActive) {
-            // Sayaç açıksa uyarı ver
-            alert("Dikkat: Aktif bir sayaç çalışıyor! Çıkış yapmadan önce lütfen sayacı kapatınız.");
-        } else {
-            // Sayaç kapalıysa oturum verilerini temizle ve giriş sayfasına yönlendir
-            localStorage.removeItem('token'); // Varsa token temizliği
-            window.location.href = 'login.html'; // Giriş sayfasına yönlendirme
-        }
-    });
-}
-    
     arayuzCiz();
 }
